@@ -4,6 +4,7 @@ import Login from './Login'
 import Register from './Register'
 import Account from './Account'
 import ProductsContainer from './Products/ProductsContainer'
+import CustomersContainer from './Customers/CustomersContainer'
 
 const NavBar = (props) => {
 
@@ -17,6 +18,7 @@ const NavBar = (props) => {
                         <Link to='/'> Home </Link>
                         <Link to='/account'> Account </Link>
                         <Link to='/products'> Products </Link>
+                        <Link to='/customers'> Customers </Link>
                         <Link onClick={ () => {
                             localStorage.removeItem('token')
                             handleAuth()
@@ -37,6 +39,7 @@ const NavBar = (props) => {
             <Route path='/register' component={Register} />
             <Route path='/account' component={Account} />
             <Route path='/products' component={ProductsContainer} />
+            <Route path='/customers' component={CustomersContainer} />
         </div>
     )
 }

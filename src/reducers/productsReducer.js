@@ -11,7 +11,15 @@ const productsReducer = (state = initialProductsValue, action) => {
             return [...state, {...action.payload}]
         }
 
+        case 'UPDATE_PRODUCT' : {
+            const result = [...state].map(ele => {
+                return ele._id === action.payload._id ? {...action.payload} : {...ele}
+            })
+            return result
+        }
+
         case 'REMOVE_PRODUCT' : {
+            console.log('remove reducer', action.payload)
             return [...state].filter(ele => {
                 return ele._id !== action.payload
             })
