@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 const headCells = [
     {id:'name', label:'Product Name'},
-    {id:'price', label:'Price'},
+    {id:'price', label:'Price in ₹'},
     {id: 'actions', label: 'Actions', disableSorting: true}
 ]
 
