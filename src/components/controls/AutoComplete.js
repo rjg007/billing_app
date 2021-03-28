@@ -1,10 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setSelectedUser } from '../../actions/selectedUserActions'
 import Input from './Input'
 
 const AutoComplete = (props) => {
 
     const [suggestions, setSuggestions] = useState([])
     const [text, setText] = useState('')
+
+    const dispatch = useDispatch()
+ 
+    // useEffect(() => {
+       
+    // }, [])
 
     // const names = ['rob', 'jon', 'sansa', 'arya', 'bran', 'rickon']
     const {customers} = props
@@ -24,6 +32,12 @@ const AutoComplete = (props) => {
 
     const suggestionSelected = (value) => {
         setText(value)
+
+        const selectedCustomer = customers.find(ele => ele.name === value)
+
+        dispatch(setSelectedUser({
+            id: selectedCustomer._id
+        }))
         setSuggestions([])
     }
 

@@ -28,11 +28,8 @@ const headCells = [
 const BillsTable = (props) => {
 
     const { addProduct } = props
-
     const dispatch = useDispatch()
-
     const classes = useStyles()
-
     const [term, setTerm] = useState('')
 
     useEffect(() => {
@@ -59,45 +56,46 @@ const BillsTable = (props) => {
         <div>
             <h1> Table </h1>
             <Grid className={classes.pageContent}>
-            <Toolbar>
-                <Grid container>
-                    <Grid item xs={8} align='left'>
-                        <Input
-                        label='Search Products'
-                        className={classes.searchInput}
-                        InputProps={{
-                            startAdornment : (<InputAdornment position='start'>
-                                <Search />
-                            </InputAdornment>
-                        )}}
-                        onChange={handleSearch}
-                        value={term}
-                    />
+                <Toolbar>
+                    <Grid container>
+                        <Grid item xs={8} align='left'>
+                            <Input
+                                label='Search Products'
+                                className={classes.searchInput}
+                                InputProps={{
+                                    startAdornment : (<InputAdornment position='start'>
+                                        <Search />
+                                    </InputAdornment>
+                                )}}
+                                onChange={handleSearch}
+                                value={term}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Toolbar>
-            <TableContainer>
-                <TableHeadComp />
-                <TableBody>
-                    {
-                        recordsAfterPagingAndSorting().map(item => {
-                            return (
-                                <TableRow key={item._id}>
-                                    <TableCell align='left'> {item.name} </TableCell>
-                                    <TableCell align='left'> {item.price} </TableCell>
-                                    <TableCell align='left'> 
-                                        <ActionBtn color='primary' onClick={ () => addProduct(item) } >
-                                            <AddIcon fontSize='small'/>
-                                        </ActionBtn>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })
-                    }
-                </TableBody>
-                <TablePaging />
-            </TableContainer>
-
+                </Toolbar>
+                <TableContainer>
+                    <TableHeadComp />
+                    <TableBody>
+                        {
+                            recordsAfterPagingAndSorting().map(item => {
+                                return (
+                                    <TableRow key={item._id}>
+                                        <TableCell align='left'> {item.name} </TableCell>
+                                        <TableCell align='left'> {item.price} </TableCell>
+                                        <TableCell align='left'> 
+                                            <ActionBtn color='primary' onClick={ () => {
+                                                addProduct(item)
+                                            } } >
+                                                <AddIcon fontSize='small'/>
+                                            </ActionBtn>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })
+                        }
+                    </TableBody>
+                    <TablePaging />
+                </TableContainer>
             </Grid>
                     </div>
     )

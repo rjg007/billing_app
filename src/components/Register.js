@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux'
 import { Grid, Paper, Avatar, TextField, Button,makeStyles } from '@material-ui/core'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { startSetUser } from '../actions/userActions';
+import validator from 'validator'
+import ErrorInput from './controls/ErrorInput'
 
 const useStyles = makeStyles({
     paperStyle: {
@@ -29,6 +31,8 @@ const Register = (props) => {
     const [password, setPassword] = useState('')
     const [businessName, setBusinessName] = useState('')
     const [address, setAddress] = useState('')
+    const [formError, setFormError] = useState({})
+    const errors = {}
 
     const dispatch = useDispatch()
 
@@ -48,21 +52,39 @@ const Register = (props) => {
         }
     }
 
+    const runValidations = () => {
+        if(userName.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0 || businessName.trim().length === 0 || address.trim().length === 0) {
+            errors.user = 'This field cannot be left blank'
+        } 
+        if(!validator.isEmail(email)) {
+            errors.email = 'Invalid E-Mail format'
+        } 
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        const formData = {
-            username : userName,
-            email : email,
-            password : password,
-            businessName : businessName,
-            address : address 
+
+        runValidations()
+
+        if(Object.keys(errors).length === 0) {
+            setFormError({})
+
+            const formData = {
+                username : userName,
+                email : email,
+                password : password,
+                businessName : businessName,
+                address : address 
+            }
+            dispatch(startSetUser(formData))
+            setUserName('')
+            setEmail('')
+            setPassword('')
+            setBusinessName('')
+            setAddress('')
+        } else {
+            setFormError(errors)
         }
-        dispatch(startSetUser(formData))
-        setUserName('')
-        setEmail('')
-        setPassword('')
-        setBusinessName('')
-        setAddress('')
     }
 
     return (
@@ -73,6 +95,9 @@ const Register = (props) => {
                         <Avatar className={classes.avatar}> <AddCircleOutlineIcon /> </Avatar>
                         <h2> Get Started </h2>
                     </Grid>
+
+
+
                     <TextField 
                         label="User Name" 
                         variant="outlined" 
@@ -81,7 +106,10 @@ const Register = (props) => {
                         onChange={handleChange}
                         name='username'
                         className={classes.textField}
-                    />
+                    /> 
+                    {/* // {
+                    //     formError.empty && <span> {formError.empty} </span>
+                    // } */}
                     <TextField  
                         label="Mail-ID" 
                         variant="outlined" 

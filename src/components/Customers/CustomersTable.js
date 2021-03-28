@@ -12,7 +12,6 @@ import CustomersForm from './CustomersForm'
 import ActionBtn from '../controls/ActionBtn'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import CustomersEdit from './CustomersEdit'
 
 const useStyles = makeStyles(theme => ({
     pageContent: {

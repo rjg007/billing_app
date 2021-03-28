@@ -62,14 +62,12 @@ const Form = (props) => {
                         value={values.name}
                         label='Product Name'
                         onChange={handleChange}
-                        error={errors.name}
                     />
                     <Input 
                         label='Price'
                         onChange={handleChange}
                         value={values.price}
                         name='price'
-                        error={errors.price}
                     />
                     <Button 
                         type='submit'
