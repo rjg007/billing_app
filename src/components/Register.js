@@ -1,166 +1,101 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Grid, makeStyles, Paper } from '@material-ui/core'
+import { FormRoot, useForm } from './useForm'
+import Input from './controls/Input'
+import Button from './controls/Button'
 import { useDispatch } from 'react-redux'
-import { Grid, Paper, Avatar, TextField, Button,makeStyles } from '@material-ui/core'
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { startSetUser } from '../actions/userActions';
-import validator from 'validator'
-import ErrorInput from './controls/ErrorInput'
+import { startSetUser } from '../actions/userActions'
 
-const useStyles = makeStyles({
-    paperStyle: {
-        padding: 20,
-        height: '80vh',
-        width: 400,
-        margin: '20px auto'
-    },
-    textField : {
-        margin: '5px 0',
-    },
-    button : {
-        margin: '10px 0 0 5px'
-    },
-    avatar: {
-        backgroundColor: '#ca0c2f'
+const useStyles = makeStyles(theme => ({
+    pageContent : {
+        margin: theme.spacing(5),
+        padding: theme.spacing(3),
+        width: '30%'
     }
-})
+}))
 
 const Register = (props) => {
 
-    const [userName, setUserName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [businessName, setBusinessName] = useState('')
-    const [address, setAddress] = useState('')
-    const [formError, setFormError] = useState({})
-    const errors = {}
-
+    const initialValues = {
+        userName: '',
+        email: '',
+        password: '',
+        businessName: '',
+        address: '',
+    }
     const dispatch = useDispatch()
-
     const classes = useStyles()
 
-    const handleChange = (e) => {
-        if(e.target.name === 'username') {
-            setUserName(e.target.value)
-        } else if (e.target.name === 'email') {
-            setEmail(e.target.value)
-        } else if (e.target.name === 'password') {
-            setPassword(e.target.value)
-        } else if (e.target.name === 'businessName') {
-            setBusinessName(e.target.value)
-        } else {
-            setAddress(e.target.value)
-        }
-    }
-
-    const runValidations = () => {
-        if(userName.trim().length === 0 || email.trim().length === 0 || password.trim().length === 0 || businessName.trim().length === 0 || address.trim().length === 0) {
-            errors.user = 'This field cannot be left blank'
-        } 
-        if(!validator.isEmail(email)) {
-            errors.email = 'Invalid E-Mail format'
-        } 
-    }
+    const {
+        values,
+        setValues,
+        handleChange
+    } = useForm(initialValues)
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
-        runValidations()
-
-        if(Object.keys(errors).length === 0) {
-            setFormError({})
-
-            const formData = {
-                username : userName,
-                email : email,
-                password : password,
-                businessName : businessName,
-                address : address 
-            }
-            dispatch(startSetUser(formData))
-            setUserName('')
-            setEmail('')
-            setPassword('')
-            setBusinessName('')
-            setAddress('')
-        } else {
-            setFormError(errors)
+        const formData = {
+            username : values.userName,
+            email : values.email,
+            password : values.password,
+            businessName : values.businessName,
+            address : values.address 
         }
+        dispatch(startSetUser(formData))
+        setValues({
+            userName: '',
+            email: '',
+            password: '',
+            businessName: '',
+            address: '',
+        })
     }
 
     return (
-        <div>
-            <Grid>
-                <Paper className={classes.paperStyle} elevation={10}>
-                    <Grid align='center'>
-                        <Avatar className={classes.avatar}> <AddCircleOutlineIcon /> </Avatar>
-                        <h2> Get Started </h2>
-                    </Grid>
-
-
-
-                    <TextField 
-                        label="User Name" 
-                        variant="outlined" 
-                        placeholder='Enter username here...'  
-                        value={userName} 
+        <Paper className={classes.pageContent}>
+            <FormRoot>
+                <Grid>
+                    <Input 
+                        label="User Name"  
+                        value={values.userName} 
                         onChange={handleChange}
-                        name='username'
-                        className={classes.textField}
-                    /> 
-                    {/* // {
-                    //     formError.empty && <span> {formError.empty} </span>
-                    // } */}
-                    <TextField  
+                        name='userName'
+                    />
+                    <Input 
                         label="Mail-ID" 
-                        variant="outlined" 
-                        placeholder='Enter Mail-ID here...'
-                        value={email} 
+                        value={values.email} 
                         onChange={handleChange}
                         name='email'
-                        className={classes.textField}
                     />
-                    <TextField 
+                    <Input 
                         type='password' 
-                        label="Password" 
-                        variant="outlined" 
-                        placeholder='Enter password here...'  
-                        value={password} 
-                        onChange={handleChange}
                         name='password'
-                        className={classes.textField}
+                        label="Password"  
+                        value={values.password} 
+                        onChange={handleChange}
                     />
-                    <TextField  
+                    <Input 
                         label="Business Name" 
-                        variant="outlined" 
-                        placeholder='Enter business name here...' 
-                        value={businessName} 
+                        value={values.businessName} 
                         onChange={handleChange}
                         name='businessName'
-                        className={classes.textField}
                     />
-                    <TextField
-                        id="outlined-multiline-flexible"
-                        label="Address"
-                        fullWidth
+                    <Input 
+                        label='Address'
                         multiline
-                        rowsMax={4}
-                        value={address}
+                        rows={4}
                         onChange={handleChange}
-                        variant="outlined"
+                        value={values.address}
                         name='address'
-                        className={classes.textField}
                     />
-                    <Button
+                    <Button 
                         type='submit'
-                        color='primary' 
-                        variant='contained' 
-                        fullWidth
+                        text='Register'
                         onClick={handleSubmit}
-                        className={classes.button}
-                    > Register</Button>
-                </Paper>
-            </Grid>
-        </div>
+                    />
+                </Grid>
+            </FormRoot>
+        </Paper>   
     )
 }
 
