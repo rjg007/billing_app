@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react' //useEffect t
-import { useDispatch, useSelector } from 'react-redux' //t
+import React, {useState, useEffect} from 'react' 
+import { useDispatch, useSelector } from 'react-redux' 
 import { Grid, makeStyles, Paper, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from '@material-ui/core'
 import { startGetProducts, startDeleteProduct } from '../../actions/productsActions' // t
 import useTable from '../useTable'

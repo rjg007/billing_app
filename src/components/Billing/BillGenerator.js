@@ -62,6 +62,7 @@ const BillGenerator = (props) => {
                         <img 
                             src={Image}
                             width='150px'
+                            alt='Empty Cart'
                         />
                         <h2> Empty Cart </h2>
                     </div>

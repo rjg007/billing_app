@@ -1,100 +1,94 @@
-import React, {useState} from 'react'
-import {withRouter} from 'react-router-dom'
+import { Grid, makeStyles, Paper } from '@material-ui/core'
+import { withRouter } from 'react-router-dom'
+import React from 'react'
+import validator from 'validator'
 import { useDispatch } from 'react-redux'
-import { Grid, Paper, Avatar, TextField, Button,makeStyles } from '@material-ui/core'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { startLogin } from '../actions/userActions'
+import Button from './controls/Button'
+import Input from './controls/Input'
+import { FormRoot, useForm } from './useForm'
 
-const useStyles = makeStyles({
-    textField: {
-        margin: '50px 0'
-    },
-    mail: {
-        marginBottom: '15px'
+const useStyles = makeStyles(theme => ({
+    pageContent : {
+        margin: theme.spacing(5),
+        padding: theme.spacing(3),
+        width: '30%'
     }
-})
+}))
 
 const Login = (props) => {
-
+    
     const {handleAuth} = props
-
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-
-    const dispatch = useDispatch()
-
     const classes = useStyles()
+    const dispatch = useDispatch()
+    const initialValues = {
+        email: '',
+        password: ''
+    }
+    const {
+        values,
+        setValues,
+        handleChange,
+        errors,
+        setErrors
+    } = useForm(initialValues)
 
-    const paperStyle = {padding: 20, height: '70vh', width: 280, margin: '20px auto'}
-    const avatarStyle = {backgroundColor: '#25ac9f'}
-
-    const handleChange = (e) => {
-        if(e.target.name === 'email') {
-            setEmail(e.target.value)
-        } else {
-            setPassword(e.target.value)
-        }
+    const validations = () => {
+        let errorObj = {}
+        errorObj.email = validator.isEmail(values.email) ? '' : 'Invalid mail format'
+        errorObj.password = values.password.length > 6 ? '' : 'Password must contain more than 6 characters'
+        setErrors({
+            ...errorObj
+        })
+        return Object.values(errorObj).every(ele => ele === '')
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        const formData = {
-            email: email,
-            password: password
+
+        if(validations()) {
+            const formData = {
+                email: values.email,
+                password: values.password
+            }
+            const reRoute = () => {
+                props.history.push('/')
+            }
+            dispatch(startLogin(formData, handleAuth,reRoute))
+            setValues({
+                email: '',
+                password: ''
+            })
         }
-        const reRoute = () => {
-            props.history.push('/')
-        }
-        dispatch(startLogin(formData, handleAuth,reRoute))
-        setEmail('')
-        setPassword('')
     }
 
     return (
-        <div>
-            <Grid>
-                <Paper elevation={10} style={paperStyle}>
-                    <Grid align='center'>
-                        <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
-                        <h2> Log In </h2>
-                    </Grid>
-                    <div className={classes.textField}>
-                        <TextField  
-                            label="Mail-ID" 
-                            variant="outlined" 
-                            placeholder='Enter Mail-ID here...' 
-                            fullWidth 
-                            required 
-                            value={email} 
-                            onChange={handleChange}
-                            name='email'
-                            className={classes.mail}
-                        />
-
-                        <TextField 
-                            label="Password" 
-                            variant="outlined" 
-                            placeholder='Enter password here...' 
-                            fullWidth 
-                            required 
-                            value={password} 
-                            type='password'
-                            onChange={handleChange}
-                            name='password'
-                        />
-                    </div>
-                    
-
-                    <Button
+        <Grid align='center'>
+            <Paper className={classes.pageContent} elvation={5} align='center' >
+                <FormRoot>
+                    <Input 
+                        label="Mail-ID" 
+                        value={values.email} 
+                        onChange={handleChange}
+                        name='email'
+                        error={errors.email}
+                    />
+                    <Input 
+                        type='password' 
+                        name='password'
+                        label="Password"  
+                        value={values.password} 
+                        onChange={handleChange}
+                        error={errors.password}
+                    />
+                    <Button 
                         type='submit'
-                        color='primary' 
-                        variant='contained' 
-                        fullWidth
+                        text='Log In'
                         onClick={handleSubmit}
-                    > Log In</Button>
-                </Paper>
-            </Grid>
-        </div>
+                    />
+                </FormRoot>
+            </Paper>
+        </Grid>
     )
 }
 

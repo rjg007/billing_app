@@ -2,20 +2,9 @@ import React from 'react';
 import { Route, withRouter } from 'react-router-dom'
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-//import Drawer from '@material-ui/core/Drawer';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import List from '@material-ui/core/List';
-// import CssBaseline from '@material-ui/core/CssBaseline';
-// import Typography from '@material-ui/core/Typography';
-// import Divider from '@material-ui/core/Divider';
-// import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
-// import ListItemText from '@material-ui/core/ListItemText';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import HomeIcon from '@material-ui/icons/Home';
@@ -27,6 +16,7 @@ import { Menu, MenuItem, Drawer, AppBar, Toolbar, List, CssBaseline, Divider, Ic
 import Login from '../Login'
 import Register from '../Register'
 import Account from '../Account'
+import Home from '../Home'
 import ProductsContainer from '../Products/ProductsContainer'
 import CustomersContainer from '../Customers/CustomersContainer'
 import BillsContainer from '../Billing/BillsContainer'
@@ -104,9 +94,10 @@ const useStyles = makeStyles((theme) => ({
   const [open, setOpen] = React.useState(false);
   const { toggleLogin, handleAuth, history } = props
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [pageTitle, setPageTitle] = React.useState('')
 
   const handlePageHeader = (str) => {
-    return str
+    setPageTitle(str)
   }
 
   const loggedInList = [
@@ -190,7 +181,7 @@ const useStyles = makeStyles((theme) => ({
             <MenuIcon />
           </IconButton>
           <Typography className={classes.typography} variant="h6" noWrap>
-            {() => handlePageHeader()}
+            {pageTitle}
           </Typography>
           {
             toggleLogin && (
@@ -240,19 +231,16 @@ const useStyles = makeStyles((theme) => ({
           </IconButton>
         </div>
         <Divider />
-          {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))} */}
           {
             toggleLogin ? (
               <List>
                 {
                   loggedInList.map(item => {
                     return (
-                      <ListItem button key={item.text} onClick={item.onClick}>
+                      <ListItem button key={item.text} onClick={() => {
+                        item.onClick()
+                        handlePageHeader(item.text)
+                      }}>
                         <ListItemIcon>
                           {item.icon}
                         </ListItemIcon>
@@ -267,7 +255,10 @@ const useStyles = makeStyles((theme) => ({
                 {
                   loggedOutList.map(item => {
                     return (
-                      <ListItem button key={item.text} onClick={item.onClick}>
+                      <ListItem button key={item.text} onClick={() => {
+                        item.onClick()
+                        handlePageHeader(item.text)
+                      }}>
                         <ListItemIcon>
                           {item.icon}
                         </ListItemIcon>
@@ -286,6 +277,7 @@ const useStyles = makeStyles((theme) => ({
         <Route path='/login'>
           <Login handleAuth={handleAuth} />
         </Route>
+        <Route path='/' component={Home} exact={true} />
         <Route path='/register' component={Register} />
         <Route path='/account' component={Account} />
         <Route path='/products' component={ProductsContainer} />

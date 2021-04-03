@@ -1,4 +1,3 @@
-import { EmojiObjects } from '@material-ui/icons'
 import axios from 'axios'
 
 export const startSetProduct = (obj) => {

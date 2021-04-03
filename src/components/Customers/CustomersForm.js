@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { Grid } from '@material-ui/core'
 import { startSetCustomer, startUpdateCustomer } from '../../actions/customersActions'
 import { useForm, FormRoot } from '../useForm'
+import validator from 'validator'
 import Input from '../controls/Input'
 import Button from '../controls/Button'
 
@@ -14,10 +15,8 @@ const initialValues = {
 
 const CustomersForm = (props) => {
 
-    const {editItem, toggleEdit, setToggleEdit, openPopUp, setOpenPopUp} = props
-
-    const {values, setValues, handleChange} = useForm(initialValues)
-
+    const {editItem, toggleEdit} = props
+    const {values, setValues, handleChange, errors, setErrors} = useForm(initialValues)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -26,24 +25,36 @@ const CustomersForm = (props) => {
         }
     }, [])
 
+    const validations = () => {
+        let errorObj = {}
+        errorObj.name = values.name ? '' : 'This field is mandatory'
+        errorObj.mobile = values.mobile.length >= 10 ? '' : 'Atleast 10 digits required'
+        errorObj.email = validator.isEmail(values.email) ? '' : 'Invalid mail format' 
+        setErrors({
+            ...errorObj
+        })
+        return Object.values(errorObj).every(ele => ele === '')
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        const formData = {
-            name: values.name,
-            mobile: values.mobile,
-            email: values.email
+        if(validations()) {
+            const formData = {
+                name: values.name,
+                mobile: values.mobile,
+                email: values.email
+            }
+            if (toggleEdit) {
+                dispatch(startUpdateCustomer(formData, editItem._id))
+            } else {
+                dispatch(startSetCustomer(formData))
+            }
+            setValues({
+                name: '',
+                mobile: '',
+                email: ''
+            })
         }
-        if (toggleEdit) {
-            dispatch(startUpdateCustomer(formData, editItem._id))
-        } else {
-            dispatch(startSetCustomer(formData))
-        }
-        setValues({
-            name: '',
-            mobile: '',
-            email: ''
-        })
-        
     }
 
     return (
@@ -56,18 +67,21 @@ const CustomersForm = (props) => {
                             value={values.name}
                             label='Customer Name'
                             onChange={handleChange}
+                            error={errors.name}
                         />
                         <Input
                             name='mobile'
                             value={values.mobile}
                             label='Mobile No.'
                             onChange={handleChange}
+                            error={errors.mobile}
                         />
                         <Input
                             name='email'
                             value={values.email}
                             label='Mail ID'
                             onChange={handleChange}
+                            error={errors.email}
                         />
                         <Button 
                             type='submit'

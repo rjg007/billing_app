@@ -7,6 +7,10 @@ const billsReducer = (state = initialBillsValue, action) => {
             return [...state, {...action.payload}]
         }
 
+        case 'GET_BILLS' : {
+            return [...action.payload]
+        }
+
         default : {
             return [...state]
         }

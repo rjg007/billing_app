@@ -14,6 +14,7 @@ const Input = (props) => {
                 value={value}
                 onChange={onChange}
                 {...other}
+                {...(error && {error: true, helperText: error})}
             />
         </div>
     )
